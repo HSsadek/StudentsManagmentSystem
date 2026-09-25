@@ -62,5 +62,37 @@ namespace StudentsDataAccessLayer
             }
             return StudentsList;
         }
+    
+        public static List<StudentDTO> GetPassedStudents()
+        {
+            var PassedStudentsList = new List<StudentDTO>();
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SP_GetPassedStudents",conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            PassedStudentsList.Add(new StudentDTO
+                                (
+                                    reader.GetInt32(reader.GetOrdinal("Id")),
+                                    reader.GetString(reader.GetOrdinal("Name")),
+                                    reader.GetInt32(reader.GetOrdinal("Age")),
+                                    reader.GetInt32(reader.GetOrdinal("Grade"))
+
+                                )
+                            );
+                        }
+                    }
+                }
+            }
+            return PassedStudentsList;
+        }
+    
+
+
     }
 }

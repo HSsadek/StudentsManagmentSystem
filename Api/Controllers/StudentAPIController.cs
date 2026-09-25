@@ -31,6 +31,8 @@ namespace Api.Controllers
             .ToArray();
         }
 
+
+        // Method to get all students 
         [HttpGet("All", Name = "GetAllStudents")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -44,7 +46,21 @@ namespace Api.Controllers
             return Ok(StudentsList);
         }
 
-    
+        // Method to get all students how passed 
+
+        [HttpGet("Passed",Name ="GetPassedStudents")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public ActionResult<IEnumerable<StudentDTO>> GetPassedStudents()
+        {
+            List<StudentDTO> PassedStudentsList = StudentsBusinessLayer.Student.GetPassedStudents();
+            if (PassedStudentsList.Count == 0)
+            {
+                return NotFound("No Students Found");
+            }
+            return Ok(PassedStudentsList);
+        }
     
     }
 }
