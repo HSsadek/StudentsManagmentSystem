@@ -92,7 +92,6 @@ namespace StudentsDataAccessLayer
             return PassedStudentsList;
         }
     
-
         public static decimal GetAverageGrade()
         {
             decimal averageGrade = 0;
@@ -111,6 +110,35 @@ namespace StudentsDataAccessLayer
                 }
             }
             return averageGrade;
+        }
+    
+        public static StudentDTO GetStudentById(int ID)
+        {
+            StudentDTO student = null;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using(SqlCommand cmd = new SqlCommand("SP_GetStudentById", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@StudentId", ID);
+                    conn.Open();
+                    using(SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            student = new StudentDTO
+                                (
+                                    reader.GetInt32(reader.GetOrdinal("Id")),
+                                    reader.GetString(reader.GetOrdinal("Name")),
+                                    reader.GetInt32(reader.GetOrdinal("Age")),
+                                    reader.GetInt32(reader.GetOrdinal("Grade"))
+                                );
+                        }
+                    }
+                }
+            }
+
+            return student;
         }
     }
 }

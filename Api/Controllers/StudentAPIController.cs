@@ -74,5 +74,24 @@ namespace Api.Controllers
             return Ok(averageGrade);
         }
 
+
+        // Method to get a Student By ID 
+        [HttpGet("{id}" , Name ="GetStudentById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public ActionResult<StudentDTO> GetStudentById(int id )
+        {
+            StudentDTO student = StudentsBusinessLayer.Student.GetStudentById(id);
+            if(student == null)
+            {
+                return NotFound("Student not found");
+            }
+            else
+            {
+                return Ok(student);
+            }
+        }
+
     }
 }
