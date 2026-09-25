@@ -93,6 +93,24 @@ namespace StudentsDataAccessLayer
         }
     
 
+        public static decimal GetAverageGrade()
+        {
+            decimal averageGrade = 0;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using(SqlCommand cmd = new SqlCommand("SP_GetAverageGrade", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
 
+                    if(result != DBNull.Value)
+                    {
+                        averageGrade = Convert.ToDecimal(result);
+                    } 
+                }
+            }
+            return averageGrade;
+        }
     }
 }

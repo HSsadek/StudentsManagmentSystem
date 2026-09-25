@@ -15,5 +15,10 @@ namespace StudentsBusinessLayer
             return StudentData.GetPassedStudents();
         }
 
+        public static decimal GetAverageGrade()
+        {
+            return StudentData.GetAverageGrade();
+        }
+
     }
 }

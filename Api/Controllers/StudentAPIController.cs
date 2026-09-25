@@ -61,6 +61,18 @@ namespace Api.Controllers
             }
             return Ok(PassedStudentsList);
         }
-    
+
+
+        // Method to get the average 
+        [HttpGet("Average", Name = "GetAverageGrade")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public ActionResult<decimal> GetAverageGrade()
+        {
+            decimal averageGrade = StudentsBusinessLayer.Student.GetAverageGrade();
+            return Ok(averageGrade);
+        }
+
     }
 }
