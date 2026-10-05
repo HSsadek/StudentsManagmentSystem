@@ -25,5 +25,10 @@ namespace StudentsBusinessLayer
             return StudentData.GetStudentById(id);
         }
 
+        public static int AddStudent(StudentsDataAccessLayer.StudentDTO student)
+        {
+            return StudentData.AddStudent(student);
+        }
+
     }
 }

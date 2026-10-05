@@ -12,6 +12,8 @@ namespace StudentsDataAccessLayer
         public string name { get; set; }
         public int age { get; set; }
         public int grade { get; set; }
+        public StudentDTO() { }
+
         public StudentDTO(int id , string name , int age , int grade)
         {
             this.Id = id;
@@ -139,6 +141,40 @@ namespace StudentsDataAccessLayer
             }
 
             return student;
+        }
+
+        // Adds a new student using stored procedure SP_AddStudent
+        // SP_AddStudent expects an OUTPUT parameter @NewStudentId; add it and read after ExecuteNonQuery
+        public static int AddStudent(StudentDTO student)
+        {
+            int newId = 0;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SP_AddStudent", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Name", student.name ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Age", student.age);
+                    cmd.Parameters.AddWithValue("@Grade", student.grade);
+
+                    // Add the output parameter expected by the stored procedure
+                    var outParam = new SqlParameter("@NewStudentId", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(outParam);
+
+                    conn.Open();
+                    // Use ExecuteNonQuery when relying on OUTPUT parameters
+                    cmd.ExecuteNonQuery();
+
+                    if (outParam.Value != null && outParam.Value != DBNull.Value)
+                    {
+                        newId = Convert.ToInt32(outParam.Value);
+                    }
+                }
+            }
+            return newId;
         }
     }
 }

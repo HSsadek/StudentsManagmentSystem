@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentsDataAccessLayer;
+using StudentsBusinessLayer;
 
 namespace Api.Controllers
 {
@@ -93,5 +94,43 @@ namespace Api.Controllers
             }
         }
 
+        // Method to add a new student
+        [HttpPost("Add", Name = "AddNewStudent")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult AddNewStudent([FromBody] StudentDTO newStudent)
+        {
+            if (newStudent == null)
+            {
+                return BadRequest("Student data is required.");
+            }
+
+            // Basic validation
+            if (string.IsNullOrWhiteSpace(newStudent.name) || newStudent.age <= 0)
+            {
+                return BadRequest("Invalid student data.");
+            }
+
+            try
+            {
+                int createdId = StudentsBusinessLayer.Student.AddStudent(newStudent);
+                if (createdId > 0)
+                {
+                    return CreatedAtRoute("GetStudentById", new { id = createdId }, newStudent);
+                }
+                else
+                {
+                    return BadRequest("Failed to create student.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding new student");
+                return BadRequest("An error occurred while creating the student.");
+            }
+        }
+
+
+      
     }
 }
